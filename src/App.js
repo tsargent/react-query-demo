@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
 import axios from "axios";
 
-function Posts() {
+function Posts({ setPostId }) {
   // https://jsonplaceholder.typicode.com/posts
   const postsQuery = useQuery("posts", () =>
     axios
@@ -13,24 +13,40 @@ function Posts() {
   console.log(postsQuery);
   return (
     <div>
-      {postsQuery.isLoading
-        ? "loading..."
-        : postsQuery.data.map((post) => <div key={post.id}>{post.title}</div>)}
+      {postsQuery.isLoading ? (
+        "loading..."
+      ) : (
+        <ul>
+          {postsQuery.data.map((post) => (
+            <li key={post.id}>
+              <button onClick={() => setPostId(post.id)}>{post.title}</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
-function Post() {
+function Post({ postId, setPostId }) {
   // https://jsonplaceholder.typicode.com/posts/1
+  return (
+    <div>
+      <button onClick={() => setPostId(-1)}>View All</button>HELLO {postId}
+    </div>
+  );
 }
 
 function App() {
   const [postId, setPostId] = useState(-1);
   return (
     <div>
-      <button onClick={() => setPostId(postId - 1)}>Prev Post</button>
-      <button onClick={() => setPostId(postId + 1)}>Next Post</button>
-      <Posts />
+      <div>Post id: {postId}</div>
+      {postId > -1 ? (
+        <Post postId={postId} setPostId={setPostId} />
+      ) : (
+        <Posts setPostId={setPostId} />
+      )}
       <ReactQueryDevtools />
     </div>
   );

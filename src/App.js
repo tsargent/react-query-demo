@@ -15,7 +15,7 @@ function Posts() {
     <div>
       {postsQuery.isLoading
         ? "loading..."
-        : postsQuery.data.map((post) => <div>{post.title}</div>)}
+        : postsQuery.data.map((post) => <div key={post.id}>{post.title}</div>)}
     </div>
   );
 }

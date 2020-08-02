@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, queryCache } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
 import axios from "axios";
 
@@ -40,6 +40,9 @@ function Post({ postId, setPostId }) {
     return axios
       .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
       .then(({ data }) => data)
+  }, {
+    initialData: queryCache.getQueryData('posts').find((post) => post.id === postId),
+    initialStale: true,
   });
   if (postQuery.isLoading) return "Loading...";
   return (

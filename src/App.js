@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
@@ -10,7 +11,6 @@ function Posts({ setPostId }) {
       .get("https://jsonplaceholder.typicode.com/posts")
       .then(({ data }) => data)
   );
-  console.log(postsQuery);
   return (
     <div>
       {postsQuery.isLoading ? (
@@ -19,7 +19,9 @@ function Posts({ setPostId }) {
         <ul>
           {postsQuery.data.map((post) => (
             <li key={post.id}>
-              <button onClick={() => setPostId(post.id)}>{post.title}</button>
+              <a href="#" onClick={() => setPostId(post.id)}>
+                {post.title}
+              </a>
             </li>
           ))}
         </ul>
@@ -29,10 +31,19 @@ function Posts({ setPostId }) {
 }
 
 function Post({ postId, setPostId }) {
-  // https://jsonplaceholder.typicode.com/posts/1
+  const postQuery = useQuery(["post", postId], () =>
+    axios
+      .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+      .then(({ data }) => data)
+  );
+  if (postQuery.isLoading) return "Loading...";
   return (
     <div>
-      <button onClick={() => setPostId(-1)}>View All</button>HELLO {postId}
+      <a href="#" onClick={() => setPostId(-1)}>
+        Back
+      </a>
+      <h1>{postQuery.data.title}</h1>
+      <p>{postQuery.data.body}</p>
     </div>
   );
 }
@@ -41,7 +52,6 @@ function App() {
   const [postId, setPostId] = useState(-1);
   return (
     <div>
-      <div>Post id: {postId}</div>
       {postId > -1 ? (
         <Post postId={postId} setPostId={setPostId} />
       ) : (

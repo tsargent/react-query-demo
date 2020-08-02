@@ -15,7 +15,7 @@ function Posts({ setPostId }) {
   });
   return (
     <div>
-      <h1>Posts</h1>
+      <h1>Posts{postsQuery.isFetching ? "..." : null}</h1>
       {postsQuery.isLoading ? (
         "loading..."
       ) : (

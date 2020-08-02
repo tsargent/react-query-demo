@@ -23,7 +23,7 @@ function Posts({ setPostId }) {
           {postsQuery.data.map((post) => (
             <li key={post.id}>
               <a href="#" onClick={() => setPostId(post.id)}>
-                {post.title}
+                {`${post.id} - ${post.title}`}
               </a>
             </li>
           ))}
@@ -41,7 +41,7 @@ function Post({ postId, setPostId }) {
       .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
       .then(({ data }) => data)
   }, {
-    initialData: queryCache.getQueryData('posts').find((post) => post.id === postId),
+    initialData: () => queryCache.getQueryData('posts')?.find((post) => post.id === postId),
     initialStale: true,
   });
   if (postQuery.isLoading) return "Loading...";

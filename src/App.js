@@ -4,15 +4,18 @@ import { useQuery } from "react-query";
 import { ReactQueryDevtools } from "react-query-devtools";
 import axios from "axios";
 
+const wait = () => new Promise(resolve => setTimeout(resolve, 1000));
+
 function Posts({ setPostId }) {
-  // https://jsonplaceholder.typicode.com/posts
-  const postsQuery = useQuery("posts", () =>
-    axios
+  const postsQuery = useQuery("posts", async () => {
+    await wait();
+    return axios
       .get("https://jsonplaceholder.typicode.com/posts")
       .then(({ data }) => data)
-  );
+  });
   return (
     <div>
+      <h1>Posts</h1>
       {postsQuery.isLoading ? (
         "loading..."
       ) : (
@@ -31,11 +34,13 @@ function Posts({ setPostId }) {
 }
 
 function Post({ postId, setPostId }) {
-  const postQuery = useQuery(["post", postId], () =>
-    axios
+  const postQuery = useQuery(["post", postId], async () => {
+    // simulate a slow network connection
+    await wait();
+    return axios
       .get(`https://jsonplaceholder.typicode.com/posts/${postId}`)
       .then(({ data }) => data)
-  );
+  });
   if (postQuery.isLoading) return "Loading...";
   return (
     <div>
@@ -44,6 +49,7 @@ function Post({ postId, setPostId }) {
       </a>
       <h1>{postQuery.data.title}</h1>
       <p>{postQuery.data.body}</p>
+      <p>{postQuery.isFetching ? "Updating..." : null}</p>
     </div>
   );
 }
